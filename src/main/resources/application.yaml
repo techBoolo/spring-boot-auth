@@ -9,3 +9,7 @@ spring:
       enabled: true
   datasource:
     url: jdbc:h2:file:./data/testdb
+
+app:
+  security:
+    public-urls: "/users/register, /users/login, /h2-console, /error, /, /health-check"
