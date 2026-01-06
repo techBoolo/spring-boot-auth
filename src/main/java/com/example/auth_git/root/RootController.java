@@ -16,6 +16,7 @@ public class RootController {
 
     @GetMapping("/health-check")
     public RootDto healthCheck(){
+//        throw new NotFoundException("error");
         return new RootDto("Health Check, Ok!");
     }
 }
