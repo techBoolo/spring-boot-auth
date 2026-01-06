@@ -1,6 +1,7 @@
 package com.example.auth_git.config;
 
 import com.example.auth_git.exception.NotFoundException;
+import com.example.auth_git.exception.RecordExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -21,6 +22,11 @@ public class GlobalExceptionHandler {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
         problemDetail.setProperty("timestamp", Instant.now());
         return problemDetail;
+    }
+
+    @ExceptionHandler(RecordExistsException.class)
+    public ProblemDetail handleRecordExistsException(RecordExistsException ex){
+        return ProblemDetail.forStatusAndDetail(HttpStatus.CONFLICT, ex.getMessage());
     }
 
     @ExceptionHandler(RuntimeException.class)
