@@ -1,5 +1,7 @@
 package com.example.auth_git.user;
 
+import com.example.auth_git.user.dto.LoginRequestDto;
+import com.example.auth_git.user.dto.LoginResponseDto;
 import com.example.auth_git.user.dto.UserRequestDto;
 import com.example.auth_git.user.dto.UserResponseDto;
 import org.springframework.web.bind.annotation.*;
@@ -29,5 +31,10 @@ public class UserController {
     @GetMapping("/{id}")
     public UserResponseDto getUser(@PathVariable Long id){
         return userService.getUser(id);
+    }
+
+    @PostMapping("/login")
+    public LoginResponseDto login(@RequestBody LoginRequestDto loginRequestDto){
+        return userService.login(loginRequestDto);
     }
 }
