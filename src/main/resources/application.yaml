@@ -9,11 +9,6 @@ spring:
       enabled: true
   datasource:
     url: jdbc:h2:file:./data/testdb
-#
-#  security:
-#    user:
-#      name: user
-#      password: "$2a$10$mWwlwwjO2hWMAp866vmaZOSCSMdj0y7PWeucRVgDDC2fWo/7k6PhG"
 
 app:
   security:

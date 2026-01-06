@@ -44,24 +44,4 @@ public class SecurityConfig {
 
         return http.build();
     }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user = User.withUsername("user")
-                .password("$2a$10$gilVezFtCefNq5cyy4tYjeGePjjfPM2AeBmxCkrrIzbEzhVIqrKxS") // {noop} means plain text (demo only)
-                .roles("USER")
-                .build();
-
-        UserDetails admin = User.withUsername("admin")
-                .password("$2a$10$0peLBGyCRBCNLo1KoMg3aeP5DffrZ7rrce6faeLNsz.UEOYy41V76")
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(user, admin);
-    }
-
-    @Bean
-    public void run(){
-        System.out.println(passwordEncoder().encode("password"));
-    }
 }
