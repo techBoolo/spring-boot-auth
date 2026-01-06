@@ -1,3 +1,6 @@
 spring:
   application:
     name: auth-git
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
