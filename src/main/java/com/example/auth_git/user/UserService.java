@@ -12,6 +12,7 @@ import com.example.auth_git.utils.JwtUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -66,6 +67,13 @@ public class UserService {
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         String accessToken = jwtUtils.generateToken(userDetails.getUsername());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
         return new LoginResponseDto(userDetails.getUsername(), accessToken,"login successfully.");
+    }
+
+    public UserResponseDto getUserByEmail(String email){
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new RecordExistsException("Record not found."));
+        return userMapper.toDto(user);
     }
 }

@@ -3,7 +3,7 @@ spring:
     name: auth-git
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
   h2:
     console:
       enabled: true
