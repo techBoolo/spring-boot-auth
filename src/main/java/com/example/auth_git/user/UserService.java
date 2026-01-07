@@ -8,11 +8,17 @@ import com.example.auth_git.user.dto.UserRequestDto;
 import com.example.auth_git.user.dto.UserResponseDto;
 import com.example.auth_git.user.entity.User;
 import com.example.auth_git.user.mapper.UserMapper;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +30,8 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final SecurityContextRepository securityContextRepository =
+            new HttpSessionSecurityContextRepository();
 
     public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
         this.userRepository = userRepository;
@@ -56,12 +64,21 @@ public class UserService {
         return userMapper.toDto(user);
     }
 
-    public LoginResponseDto login(LoginRequestDto loginRequestDto){
+    public LoginResponseDto login(
+            LoginRequestDto loginRequestDto,
+            HttpServletRequest request,
+            HttpServletResponse response){
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDto.email(), loginRequestDto.password())
         );
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return new LoginResponseDto(userDetails.getUsername(), "login successfully.");
+        // session auth
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
+        SecurityContextHolder.setContext(context);
+        securityContextRepository.saveContext(context, request, response);
+
+
+        return new LoginResponseDto(context.getAuthentication().getName(), "login successfully.");
     }
 }

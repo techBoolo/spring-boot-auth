@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -42,7 +43,13 @@ public class SecurityConfig {
                         header
                                 .frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                 )
-                .httpBasic(Customizer.withDefaults());
+                .sessionManagement(session ->
+                        session
+                                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                                .sessionFixation().migrateSession()
+                                .maximumSessions(1)
+                );
+//                .httpBasic(Customizer.withDefaults());
 
         return http.build();
     }
