@@ -8,6 +8,7 @@ import com.example.auth_git.user.dto.UserRequestDto;
 import com.example.auth_git.user.dto.UserResponseDto;
 import com.example.auth_git.user.entity.User;
 import com.example.auth_git.user.mapper.UserMapper;
+import com.example.auth_git.utils.JwtUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -24,12 +25,14 @@ public class UserService {
     private final UserMapper userMapper;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
 
-    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtils jwtUtils) {
         this.userRepository = userRepository;
         this.userMapper = userMapper;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
+        this.jwtUtils = jwtUtils;
     }
 
     public UserResponseDto register(UserRequestDto requestDto){
@@ -62,6 +65,7 @@ public class UserService {
         );
 
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        return new LoginResponseDto(userDetails.getUsername(), "login successfully.");
+        String accessToken = jwtUtils.generateToken(userDetails.getUsername());
+        return new LoginResponseDto(userDetails.getUsername(), accessToken,"login successfully.");
     }
 }
